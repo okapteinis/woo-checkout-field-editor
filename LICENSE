@@ -1,0 +1,67 @@
+DUAL LICENSE
+
+This project contains code under two licenses:
+
+================================================================================
+1. ORIGINAL PLUGIN CODE - GPLv2 or later
+================================================================================
+
+The original WooCommerce Checkout Field Editor plugin code is licensed under:
+
+GNU GENERAL PUBLIC LICENSE
+Version 2, June 1991
+
+Copyright (C) ThemeHigh
+https://www.themehigh.com/
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+Full license text: http://www.gnu.org/licenses/gpl-2.0.html
+
+================================================================================
+2. CUSTOM MODIFICATIONS AND DOCUMENTATION - CC BY-NC-ND 4.0
+================================================================================
+
+Custom modifications, documentation, and development work by Ojārs Kapteinis
+are licensed under:
+
+Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International
+
+Copyright (c) 2025 Ojārs Kapteinis
+
+You are free to:
+- Share — copy and redistribute the material in any medium or format
+
+Under the following terms:
+- Attribution — You must give appropriate credit, provide a link to the
+  license, and indicate if changes were made.
+- NonCommercial — You may not use the material for commercial purposes.
+- NoDerivatives — If you remix, transform, or build upon the material, you
+  may not distribute the modified material.
+
+Full license text: https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
+
+================================================================================
+NOTICE
+================================================================================
+
+This repository is a fork of the WooCommerce Checkout Field Editor plugin
+for custom development purposes. The original plugin is available at:
+https://wordpress.org/plugins/woo-checkout-field-editor-pro/
+
+When in doubt about which license applies to specific code:
+- Original plugin code and functionality: GPLv2 or later
+- Custom modifications and additions: CC BY-NC-ND 4.0
+- Documentation (README.md, etc.): CC BY-NC-ND 4.0
