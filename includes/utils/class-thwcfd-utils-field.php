@@ -181,12 +181,12 @@ class THWCFD_Utils_Field {
 	}
 	
 	public static function prepare_field_from_posted_data($posted, $props){
-		$type = isset($posted['i_type']) ? trim(stripslashes($posted['i_type'])) : '';
-		$type = empty($type) ? trim(stripslashes($posted['i_original_type'])) : $type;
-		$type = empty($type) ? trim(stripslashes($posted['i_otype'])) : $type;
+		$type = isset($posted['i_type']) ? sanitize_key($posted['i_type']) : '';
+		$type = empty($type) ? sanitize_key($posted['i_original_type']) : $type;
+		$type = empty($type) ? sanitize_key($posted['i_otype']) : $type;
 
-		$fname = isset($posted['i_name']) ? trim(stripslashes($posted['i_name'])) : '';
-		$fname = empty($fname) ? trim(stripslashes($posted['i_name_old'])) : $fname;
+		$fname = isset($posted['i_name']) ? sanitize_key($posted['i_name']) : '';
+		$fname = empty($fname) ? sanitize_key($posted['i_name_old']) : $fname;
 
 		$field = self::create_field($type); 
 
@@ -200,9 +200,9 @@ class THWCFD_Utils_Field {
 				$pvalue = isset($posted[$iname]) ? $posted[$iname] : 0;
 			}else if(isset($posted[$iname])){
 				if(is_array($posted[$iname])){
-					$pvalue = implode(',', $posted[$iname]);
+					$pvalue = implode(',', array_map('sanitize_text_field', array_map('wp_unslash', $posted[$iname])));
 				}else{
-					$pvalue = trim(stripslashes($posted[$iname]));
+					$pvalue = sanitize_text_field(wp_unslash($posted[$iname]));
 					$pvalue = wp_kses_post($pvalue);
 				}
 			}
@@ -211,7 +211,7 @@ class THWCFD_Utils_Field {
 		}
 		
 		if($type === 'select' || $type === 'multiselect' || $type === 'radio' || $type === 'checkboxgroup'){
-			$options_json = isset($posted['i_options']) ? trim(stripslashes($posted['i_options'])) : '';
+			$options_json = isset($posted['i_options']) ? sanitize_textarea_field(wp_unslash($posted['i_options'])) : '';
 			$options_arr = self::prepare_options_array($options_json);
 
 			$options_extra = apply_filters('thwcfe_field_options', array(), $field->get_property('name'));
@@ -238,10 +238,10 @@ class THWCFD_Utils_Field {
 			$field->set_property('name', $fname);
 		}
 		
-		//$field->set_property('order', isset($posted['order']) ? trim(stripslashes($posted['order'])) : 0);
-		//$field->set_property('custom_field', isset($posted['i_custom_field']) ? trim(stripslashes($posted['i_custom_field'])) : 0);
-		
-		$field->set_property('name_old', isset($posted['i_name_old']) ? trim(stripslashes($posted['i_name_old'])) : '');
+		//$field->set_property('order', isset($posted['order']) ? absint($posted['order']) : 0);
+		//$field->set_property('custom_field', isset($posted['i_custom_field']) ? absint($posted['i_custom_field']) : 0);
+
+		$field->set_property('name_old', isset($posted['i_name_old']) ? sanitize_key($posted['i_name_old']) : '');
 		
 		self::prepare_properties($field);
 		return $field;

@@ -317,15 +317,15 @@ class THWCFD_Admin_Settings_Block_Fields extends THWCFD_Admin_Settings{
 		}
 		try {
 			if(THWCFD_Utils_Section::is_valid_section($section)){
-				$f_names = !empty( $_POST['f_name'] ) ? $_POST['f_name'] : array();	
+				$f_names = !empty( $_POST['f_name'] ) ? array_map('sanitize_key', $_POST['f_name']) : array();
 				if(empty($f_names)){
 					echo '<div class="error"><p> '. esc_html__('Your changes were not saved due to no fields found.', 'woo-checkout-field-editor-pro') .'</p></div>';
 					return;
 				}
-				
-				$f_order   = !empty( $_POST['f_order'] ) ? $_POST['f_order'] : array();	
-				$f_deleted = !empty( $_POST['f_deleted'] ) ? $_POST['f_deleted'] : array();
-				$f_enabled = !empty( $_POST['f_enabled'] ) ? $_POST['f_enabled'] : array();		
+
+				$f_order   = !empty( $_POST['f_order'] ) ? array_map('absint', $_POST['f_order']) : array();
+				$f_deleted = !empty( $_POST['f_deleted'] ) ? array_map('absint', $_POST['f_deleted']) : array();
+				$f_enabled = !empty( $_POST['f_enabled'] ) ? array_map('absint', $_POST['f_enabled']) : array();		
 				$sname = $section->get_property('name');
 				$field_set = THWCFD_Utils_Section::get_fields($section);
 				
@@ -391,7 +391,8 @@ class THWCFD_Admin_Settings_Block_Fields extends THWCFD_Admin_Settings{
 					$pvalue = !empty($posted[$iname]) ? sanitize_key($posted[$iname]) : "";
 				}else if(($pname === 'label')){
 					//$pvalue = !empty($posted[$iname]) ? htmlentities(stripslashes($posted[$iname])) : "";
-					$pvalue = !empty($posted[$iname]) ? wp_unslash(wp_filter_post_kses($posted[$iname])) : "";
+					// For basic labels, no HTML should be needed
+					$pvalue = !empty($posted[$iname]) ? sanitize_text_field(wp_unslash($posted[$iname])) : "";
 				}else if(($pname === 'validate')){
 					$pvalue = !empty($posted[$iname]) ? (array) $posted[$iname] : array();
 					$pvalue = array_map( 'sanitize_key', $pvalue );
@@ -439,17 +440,19 @@ class THWCFD_Admin_Settings_Block_Fields extends THWCFD_Admin_Settings{
 		}
 
 		if($type === 'select' || $type === 'radio' || $type === 'checkboxgroup' || $type === 'multiselect'){
-			$options_json = isset($posted['i_options_json']) ? trim(stripslashes($posted['i_options_json'])) : '';
+			$options_json = isset($posted['i_options_json']) ? sanitize_textarea_field(wp_unslash($posted['i_options_json'])) : '';
 			$options_arr = THWCFD_Utils::prepare_options_array($options_json, $type);
 
-			$keys = array_keys($options_arr);
-			// $keys = array_map('sanitize_key', $keys);
-			$keys = array_map('sanitize_text_field', $keys);
-
-			$values = array_values($options_arr);
-			$values = array_map('htmlspecialchars', $values);
-
-			$options_arr = array_combine($keys, $values);
+			// Properly sanitize both keys and values
+			if(is_array($options_arr)){
+				$clean_options = array();
+				foreach($options_arr as $key => $value){
+					$clean_key = sanitize_text_field($key);
+					$clean_value = sanitize_text_field($value);
+					$clean_options[$clean_key] = $clean_value;
+				}
+				$options_arr = $clean_options;
+			}
 
 			$field['options'] = $options_arr;
 

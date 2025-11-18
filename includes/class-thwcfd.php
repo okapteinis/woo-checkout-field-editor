@@ -98,9 +98,51 @@ class THWCFD {
 	}
 
     private function define_blocks(){
+        // Only initialize if WooCommerce Blocks and modern WP features are available
+        if ($this->supports_blocks()) {
+            $plugin_block_checkout = new THWCFD_Block();
+            $plugin_block_checkout->init();
+        }
+    }
 
-        $plugin_block_checkout = new THWCFD_Block();
-        $plugin_block_checkout->init();
+    /**
+     * Check if the environment is ClassicPress
+     * @return bool
+     */
+    private function is_classicpress() {
+        return function_exists('classicpress_version');
+    }
+
+    /**
+     * Get WooCommerce version
+     * @return string
+     */
+    private function get_wc_version() {
+        return defined('WC_VERSION') ? WC_VERSION : '1.0';
+    }
+
+    /**
+     * Check if block checkout features are supported
+     * @return bool
+     */
+    private function supports_blocks() {
+        // ClassicPress doesn't support blocks
+        if ($this->is_classicpress()) {
+            return false;
+        }
+        // Check for WP 5.0+ (has_block function) and WC Blocks
+        if (!function_exists('has_block')) {
+            return false;
+        }
+        // Check WooCommerce version (blocks require 8.8.0+)
+        if (version_compare($this->get_wc_version(), '8.8.0', '<')) {
+            return false;
+        }
+        // Check if WooCommerce Blocks package is available
+        if (!class_exists('Automattic\WooCommerce\Blocks\Package')) {
+            return false;
+        }
+        return true;
     }
 
 	private function define_constants(){

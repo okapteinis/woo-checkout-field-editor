@@ -142,11 +142,13 @@ class THWCFD_Block_Integration implements IntegrationInterface {
 			true
 		);
 
-		wp_set_script_translations(
-			'thwcfe-contact-info-section-editor',
-			'woo-checkout-field-editor-pro',
-			dirname( __FILE__ ) . '/languages'
-		);
+		if (function_exists('wp_set_script_translations')) {
+			wp_set_script_translations(
+				'thwcfe-contact-info-section-editor',
+				'woo-checkout-field-editor-pro',
+				dirname( __FILE__ ) . '/languages'
+			);
+		}
 	}
 
 	
@@ -181,11 +183,13 @@ class THWCFD_Block_Integration implements IntegrationInterface {
 			$script_asset['version'],
 			true
 		);
-		wp_set_script_translations(
-			'thwcfe-contact-info-section-frontend',
-			'woo-checkout-field-editor-pro',
-			dirname( __FILE__ ) . '/languages'
-		);
+		if (function_exists('wp_set_script_translations')) {
+			wp_set_script_translations(
+				'thwcfe-contact-info-section-frontend',
+				'woo-checkout-field-editor-pro',
+				dirname( __FILE__ ) . '/languages'
+			);
+		}
 	}
 
 	public function register_additional_sections_editor_scripts(){
@@ -208,11 +212,13 @@ class THWCFD_Block_Integration implements IntegrationInterface {
 			true
 		);
 
-		wp_set_script_translations(
-			'thwcfe-additional-sections-editor',
-			'woo-checkout-field-editor-pro',
-			dirname( __FILE__ ) . '/languages'
-		);
+		if (function_exists('wp_set_script_translations')) {
+			wp_set_script_translations(
+				'thwcfe-additional-sections-editor',
+				'woo-checkout-field-editor-pro',
+				dirname( __FILE__ ) . '/languages'
+			);
+		}
 	}
 
 	public function register_additional_sections_editor_styles(){
@@ -247,11 +253,13 @@ class THWCFD_Block_Integration implements IntegrationInterface {
 			true
 		);
 
-		wp_set_script_translations(
-			'thwcfe-additional-sections-frontend',
-			'woo-checkout-field-editor-pro',
-			dirname( __FILE__ ) . '/languages'
-		);
+		if (function_exists('wp_set_script_translations')) {
+			wp_set_script_translations(
+				'thwcfe-additional-sections-frontend',
+				'woo-checkout-field-editor-pro',
+				dirname( __FILE__ ) . '/languages'
+			);
+		}
 	}
 
 	public function register_additional_sections_frontend_styles(){
