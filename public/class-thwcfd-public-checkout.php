@@ -199,7 +199,7 @@ class THWCFD_Public_Checkout {
 		$value = isset($_POST[$key]) ? sanitize_text_field(wp_unslash($_POST[$key])) : '';
 
 		if(!$value){
-			$post_data = isset($_POST['post_data']) ? sanitize_text_field($_POST['post_data']) : '';
+			$post_data = isset($_POST['post_data']) ? wp_unslash($_POST['post_data']) : '';
 
 			if($post_data){
 				parse_str($post_data, $post_data_arr);
