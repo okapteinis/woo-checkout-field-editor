@@ -47,6 +47,9 @@ class THWCFD_Block {
     }
 
     private function has_block_checkout() {
+        if (!function_exists('has_block')) {
+            return false;
+        }
         $checkout_page_id = wc_get_page_id( 'checkout' );
         $has_block_checkout = $checkout_page_id && has_block( 'woocommerce/checkout', $checkout_page_id );
         return $has_block_checkout || apply_filters( 'thwcfe_woocommerce_blocks_has_block_checkout', false );

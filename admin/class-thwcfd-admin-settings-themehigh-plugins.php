@@ -316,19 +316,28 @@ class THWCFD_Admin_Settings_Themehigh_Plugins extends THWCFD_Admin_Settings{
 	}
 
 	function activate_themehigh_plugins(){
+		// Check capabilities first
+		if ( !current_user_can( 'install_plugins' ) || !current_user_can( 'activate_plugins' ) ) {
+			wp_send_json_error('Insufficient permissions');
+			return;
+		}
+
 		$plugin_file = isset($_REQUEST['file']) ? sanitize_text_field(wp_unslash($_REQUEST['file'])) : '';
-		if( $plugin_file && check_ajax_referer( 'activate-plugin_' . $plugin_file ) ){
-			if ( current_user_can( 'install_plugins' ) && current_user_can( 'activate_plugins' ) ) {
-				if (!is_plugin_active($plugin_file) ) {
+		if(!$plugin_file){
+			wp_send_json_error('Invalid plugin file');
+			return;
+		}
 
-					$result = activate_plugin($plugin_file);
+		// Verify nonce
+		check_ajax_referer( 'activate-plugin_' . $plugin_file );
 
-			        if( is_wp_error( $result ) ) {
-			            wp_send_json(false);
-			        }else{
-			        	wp_send_json(true);
-			        }
-				}
+		if( !is_plugin_active($plugin_file) ) {
+			$result = activate_plugin($plugin_file);
+
+			if( is_wp_error( $result ) ) {
+				wp_send_json(false);
+			}else{
+				wp_send_json(true);
 			}
 		}
 		wp_send_json(false);

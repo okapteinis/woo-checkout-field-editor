@@ -110,23 +110,24 @@ class THWCFD_Admin_Settings_Advanced extends THWCFD_Admin_Settings{
 		
 		foreach( $this->settings_fields as $name => $field ) {
 			$value = '';
-			
+
 			if($field['type'] === 'checkbox'){
 				$value = !empty( $_POST['i_'.$name] ) ? '1' : '';
 
 			}else if($field['type'] === 'multiselect_grouped'){
 				$value = !empty( $_POST['i_'.$name] ) ? $_POST['i_'.$name] : '';
-				$value = is_array($value) ? implode(',', wc_clean(wp_unslash($value))) : wc_clean(wp_unslash($value));
+				$value = is_array($value) ? implode(',', array_map('sanitize_text_field', array_map('wp_unslash', $value))) : sanitize_text_field(wp_unslash($value));
 
-			}else if($field['type'] === 'text' || $field['type'] === 'textarea'){
-				$value = !empty( $_POST['i_'.$name] ) ? $_POST['i_'.$name] : '';
-				$value = !empty($value) ? wc_clean( wp_unslash($value)) : '';
+			}else if($field['type'] === 'text'){
+				$value = !empty( $_POST['i_'.$name] ) ? sanitize_text_field(wp_unslash($_POST['i_'.$name])) : '';
+
+			}else if($field['type'] === 'textarea'){
+				$value = !empty( $_POST['i_'.$name] ) ? sanitize_textarea_field(wp_unslash($_POST['i_'.$name])) : '';
 
 			}else{
-				$value = !empty( $_POST['i_'.$name] ) ? $_POST['i_'.$name] : '';
-				$value = !empty($value) ? wc_clean( wp_unslash($value)) : '';
+				$value = !empty( $_POST['i_'.$name] ) ? sanitize_text_field(wp_unslash($_POST['i_'.$name])) : '';
 			}
-			
+
 			$settings[$name] = $value;
 		}
 				
@@ -268,6 +269,24 @@ class THWCFD_Admin_Settings_Advanced extends THWCFD_Admin_Settings{
 
 			// $settings = unserialize($base64_decoded, ['allowed_classes' => false]);
 			$settings = json_decode($base64_decoded,true);
+
+			// Validate structure
+			if(!is_array($settings)){
+				$this->print_notices(__('Invalid settings format. Please try again with valid data.', 'woo-checkout-field-editor-pro'), 'error', false);
+				return false;
+			}
+
+			// Whitelist only expected keys
+			$allowed_keys = array('option_key_billing_fields', 'option_key_shipping_fields',
+			                     'option_key_additional_fields', 'option_key_advanced_settings');
+			$settings = array_intersect_key($settings, array_flip($allowed_keys));
+
+			// Further validate each setting section is an array
+			foreach($settings as $key => $value){
+				if(!is_array($value)){
+					unset($settings[$key]);
+				}
+			}
 			// Clear cache if necessary
 			if (apply_filters('thwcfe_disable_settings_cache', false)) {
 				wp_cache_delete(THWCFD_Utils::OPTION_KEY_BILLING_FIELDS, 'options');
